@@ -3,58 +3,6 @@ name: "test"
 on: [push]
 
 jobs:
-  test:
-    strategy:
-      fail-fast: false
-      matrix:
-        luaVersion: ["5.4"]
-        compiler: ["gcc", "clang"]
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@master
-    - uses: leafo/gh-actions-lua@v8.0.0
-      with:
-        luaVersion: ${{matrix.luaVersion}}
-    - uses: leafo/gh-actions-luarocks@v4.0.0
-    - name: Install busted
-      run: luarocks install busted
-    - name: Install dependencies
-      run: luarocks make rockspecs/nelua-dev-1.rockspec
-    - name: Test
-      run: CC=${{matrix.compiler}} busted -o utfTerminal
-
-  coverage:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@master
-    - uses: leafo/gh-actions-lua@v8.0.0
-      with:
-        luaVersion: 5.4
-    - uses: leafo/gh-actions-luarocks@v4.0.0
-    - name: Install busted
-      run: luarocks install busted
-    - name: Install luacov
-      run: luarocks install luacov && luarocks install cluacov
-    - name: Install dependencies
-      run: luarocks make rockspecs/nelua-dev-1.rockspec
-    - name: Coverage
-      run: |
-        echo "return {}" > .neluacfg.lua
-        make coverage-test
-
-  check:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@master
-    - uses: leafo/gh-actions-lua@v8.0.0
-      with:
-        luaVersion: 5.4
-    - uses: leafo/gh-actions-luarocks@v4.0.0
-    - name: Install luacheck
-      run: luarocks install luacheck
-    - name: Check
-      run: luacheck .
-
   test-macos:
     runs-on: macos-latest
     steps:
